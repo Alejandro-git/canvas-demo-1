@@ -8,24 +8,65 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="canvas"></div>
+    <canvas id="canvas" width="100" height="100"></canvas>
     <script>
-        canvas.onclick = (e)=>{
-            console.log(e.clientX)
-            console.log(e.clientY)
-            // console.log调试大法
-            let div = document.createElement('div')
-            div.style.position = 'absolute'
-            div.style.left = e.clientX + 'px'
-            div.style.top = e.clientY + 'px'
-            div.style.border = '1px solid red'
-            div.style.height = '6px'
-            div.style.width = '6px'
-            div.style.marginLeft = '-3px'
-            div.style.marginTop = '-3px'
-            div.style.borderRadius = '50%'
-            div.style.backgroundColor = 'red'
-            canvas.appendChild(div)
+        
+        // canvas.onmousemove = (e)=>{
+        //     // onclick点击事件；onmousemove鼠标移动事件；
+        //     console.log(e.clientX)
+        //     console.log(e.clientY)
+        //     // console.log调试大法
+        //     let div = document.createElement('div')
+        //     div.style.position = 'absolute'
+        //     div.style.left = e.clientX + 'px'
+        //     div.style.top = e.clientY + 'px'
+        //     div.style.border = '1px solid red'
+        //     div.style.height = '6px'
+        //     div.style.width = '6px'
+        //     div.style.marginLeft = '-3px'
+        //     div.style.marginTop = '-3px'
+        //     div.style.borderRadius = '50%'
+        //     div.style.backgroundColor = 'red'
+        //     canvas.appendChild(div)
+        //     // 这一段代码虽然能实现但是非常低效并且很卡顿;
+        //     // 原因是JS直接操作DOM造成的;
+        //     // 所以虽然可以实现但是不用这段;
+        // }
+        let canvas = document.getElementById("canvas");
+        // JS可以获取屏幕的宽高;获取canvas
+        
+        let ctx = canvas.getContext("2d");
+
+        canvas.width = document.documentElement.clientWidth
+        // canvas的宽等于屏幕的宽
+        
+        canvas.height = document.documentElement.clientHeight
+
+        let painting = false
+
+        ctx.fillStyle = "black"
+        ctx.strokeStyle = "null"
+        
+        canvas.onmousedown =()=>{
+            
+            painting = true
+        }
+        canvas.onmousemove = (e)=>{
+            if (painting === true) {
+                // console.log(e.clientX)
+                // console.log(e.clientY)
+                // ctx.fillRect(e.clientX -5,e.clientY -5,10,10);
+                ctx.beginPath();
+                ctx.arc(e.clientX,e.clientY,10,0,2*Math.PI);
+                ctx.stroke();
+                ctx.fill();
+            } 
+            else{
+                console.log("什么都不做")
+            }
+        }
+        canvas.onmouseup =()=> {
+            painting = false
         }
     </script>
 </body>
