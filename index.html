@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,11 @@
     <title>画板</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <canvas id="canvas" width="100" height="100"></canvas>
     <script>
-        
+
         // canvas.onmousemove = (e)=>{
         //     // onclick点击事件；onmousemove鼠标移动事件；
         //     console.log(e.clientX)
@@ -33,41 +35,79 @@
         //     // 所以虽然可以实现但是不用这段;
         // }
         let canvas = document.getElementById("canvas");
-        // JS可以获取屏幕的宽高;获取canvas
-        
+        // JS可以获取屏幕的宽高;获取canvas       
         let ctx = canvas.getContext("2d");
-
         canvas.width = document.documentElement.clientWidth
-        // canvas的宽等于屏幕的宽
-        
+        // canvas的宽等于屏幕的宽       
         canvas.height = document.documentElement.clientHeight
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "none";
+        ctx.lineWidth = 4;
+        // 控制线的粗细
+        ctx.lineCap = 'round';
+        //让画线条过程中的‘相接不圆滑问题’解决
+
+
+
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+
 
         let painting = false
+        let last
 
-        ctx.fillStyle = "black"
-        ctx.strokeStyle = "null"
-        
-        canvas.onmousedown =()=>{
-            
-            painting = true
-        }
-        canvas.onmousemove = (e)=>{
-            if (painting === true) {
-                // console.log(e.clientX)
-                // console.log(e.clientY)
-                // ctx.fillRect(e.clientX -5,e.clientY -5,10,10);
-                ctx.beginPath();
-                ctx.arc(e.clientX,e.clientY,10,0,2*Math.PI);
-                ctx.stroke();
-                ctx.fill();
-            } 
-            else{
-                console.log("什么都不做")
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+        //声明是触屏设备 = 触屏事件成立
+        if (isTouchDevice) {
+            canvas.ontouchstart = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                last = [x, y]
+            }
+
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                // console.log(x, y)
+                // ctx.beginPath();
+                // ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                // ctx.stroke();
+                // ctx.fill();
+                drawLine(last[0], last[1], x, y)
+                last = [x, y]
+            }
+        } else {
+
+            canvas.onmousedown = (e) => {
+                painting = true
+                last = [e.clientX, e.clientY]
+                //这里last是鼠标按下时定义上一次的点
+            }
+            canvas.onmousemove = (e) => {
+                if (painting === true) {
+                    // ctx.beginPath();
+                    // ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+                    // ctx.stroke();
+                    // ctx.fill();
+                    drawLine(last[0], last[1], e.clientX, e.clientY)
+                    last = [e.clientX, e.clientY]
+                    //这里的last作用是让上一次的点实时更新
+                } else {
+
+                }
+
+            }
+            canvas.onmouseup = (e) => {
+                painting = false
             }
         }
-        canvas.onmouseup =()=> {
-            painting = false
-        }
     </script>
+
 </body>
+
 </html>
